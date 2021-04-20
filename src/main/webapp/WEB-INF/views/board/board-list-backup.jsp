@@ -23,27 +23,25 @@
 	<nav aria-label="Page navigation example">
   <ul class="pagination" id="pageNumberList">
   	<li class="page-item" onclick="pageCount(this)" id="prev">
-      <a class="page-link">
+      <a class="page-link" href="#" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
-    <li class="page-item" data-col="pageNumber"><a class="page-link">1</a></li>
-    <li class="page-item" data-col="pageNumber"><a class="page-link">2</a></li>
-    <li class="page-item" data-col="pageNumber"><a class="page-link">3</a></li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
     <li class="page-item" onclick="pageCount(this)" id="next">
-      <a class="page-link">
+      <a class="page-link" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>
   </ul>
 </nav>
 	<script>
-		const countPage = 5;
-		
-		window.addEventListener('load', page(2));
+		window.addEventListener('load', page(3));
 		function page(page){
 			
-			var url = '/board?size=5&page=' + (page-1); 
+			var url = '/board?size=20&page=' + (page-1); 
 			var xhr = new XMLHttpRequest();
 			//xhr.open('GET', '/board?size=5&sort=boNum,desc&page=4');
 			xhr.open('GET', url);
@@ -52,6 +50,7 @@
 					var res = JSON.parse(xhr.responseText);
 					console.log(res);
 					var html = '';
+					var li = '';
 					for(var board of res.content){
 						html += '<tr>';
 						html += '<td>' + board.boNum + '</td>';
@@ -59,34 +58,46 @@
 						html += '<td>' + board.boContent + '</td>';
 						html += '</tr>';
 					}
-					var disable = res.first ? 'disabled' : '';
-					var li = '<li class="page-item ' + disable + '" onclick="page(' + res.number + ')">';
-					li += '<a class="page-link" href="#" tabindex="-1">Previous</a>';
-					li += '</li>';
-					var startPage = Math.floor((((Number(res.number) + 1) - 1) / countPage)) * countPage + 1;
-					console.log(startPage);
-					var endPage = startPage + countPage - 1;
-					if(endPage > res.totalPages){
-						endPage = res.totalPages;
+					for(var i=1; i<=res.totalPages; i++){
+						li += '<li class="page-item"><a class="page-link" href="#">'+ i +'</a></li>';
 					}
-					for(startPage; startPage<=endPage; startPage++){
-						if(startPage === page){
-							li += '<li class="page-item active" onclick="page(' + startPage + ')"><a class="page-link" href="#">'+ startPage +'</a></li>';
-							continue;
-						}
-						li += '<li class="page-item" onclick="page(' + startPage +')"><a class="page-link" href="#">'+ startPage +'</a></li>';
-					}
-					disable = res.last ? 'disabled' : '';
-					li += '<li class="page-item ' + disable +'" onclick="page(' + (Number(res.number)+2) +')">';
-				    li += '<a class="page-link" href="#">Next</a>';
-				  	li += '</li>';
-				    
 					
 					document.querySelector('#tBody').innerHTML = html;
 					document.querySelector('#pageNumberList').innerHTML = li;
 				}
 			}
-			xhr.send();
+			//xhr.send();
+		}
+		function pageCount(obj){
+			var ul = document.querySelector('#pageNumberList'); 
+			
+			var prev = document.querySelector('#prev');
+			var next = document.querySelector('#next');
+			var firstItem = prev.nextSibling.nextSibling;
+			var lastItem = next.previousSibling.previousSibling;
+			
+			if(obj.id == 'next'){
+				var firstNumber = document.createTextNode(Number(firstItem.firstChild.innerHTML) + 1);
+				var firstReplaceItem = createNode(firstNumber);
+				ul.replaceChild(firstReplaceItem, firstItem);
+				var lastNumber = document.createTextNode(Number(lastItem.firstChild.innerHTML) + 1);
+				var lastReplaceItem = createNode(lastNumber);
+				ul.replaceChild(lastReplaceItem, lastItem);
+			}else{
+				firstVal.innerHTML = (Number(firstVal.innerHTML) - 1);
+				lastVal.innerHTML = (Number(lastVal.innerHTML) - 1);
+			}
+			
+		}
+		function createNode(number){
+			var li = document.createElement("li");
+			li.className = "page-item";
+			var a = document.createElement("a");
+			a.className = "page-link";
+			a.href = "#";
+			li.appendChild(a).appendChild(number);
+			return li;
+			
 		}
 	</script>
 </body>
