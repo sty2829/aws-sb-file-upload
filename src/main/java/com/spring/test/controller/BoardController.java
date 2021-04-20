@@ -29,4 +29,13 @@ public class BoardController {
 		log.info("DataTable=>{}", dt);
 		return dt;
 	}
+	
+	
+	@GetMapping("/board")
+	public Page<Board> getList(Pageable pageable) {
+		log.info("pageable=>{}", pageable);
+		Page<Board> pb = boardRepository.findAll(pageable);
+		log.info("DataTable=>{}", pb);
+		return pb;
+	}
 }
