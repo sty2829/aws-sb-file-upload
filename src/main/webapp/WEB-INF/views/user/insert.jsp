@@ -7,19 +7,23 @@
 <title>Insert title here</title>
 </head>
 <body>
-로그인화면~~
-<button onclick="getSession()">세션얻기</button>
+<button onclick="goInsert()">테스트</button>
 <script>
-function getSession(){
+function goInsert(){
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', "/user");
+	xhr.open('POST', "/user");
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState == 4 && xhr.status == 200){
 			var res = xhr.responseText;
 			console.log(res);
 		}
 	}
-	xhr.send();
+	var param = {
+			userID : 'haha'
+	}
+	
+	xhr.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+	xhr.send(JSON.stringify(param));
 }
 </script>
 </body>

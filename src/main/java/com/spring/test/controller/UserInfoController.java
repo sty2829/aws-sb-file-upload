@@ -1,13 +1,19 @@
 package com.spring.test.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.test.dto.UserSession;
 import com.spring.test.entity.UserInfo;
 import com.spring.test.repository.UserInfoRepository;
 
@@ -21,10 +27,27 @@ public class UserInfoController {
 	private UserInfoRepository uiRepo;
 	
 	@PostMapping("/user")
-	public @ResponseBody Integer insert(@RequestBody UserInfo user) {
-		log.info("user=>{}", user);
-		uiRepo.save(user);
-		return user.getUserNum();
+	public @ResponseBody Integer insert(UserSession userSession , @RequestBody UserInfo userInfo) {
+		log.info("userSession=>{}", userSession);
+		log.info("userInfo => {}", userInfo);
+		return 1;
+	}
+	
+	@PostMapping("/user/{uiNum}")
+	public @ResponseBody Integer insertS(@PathVariable Integer uiNum , @RequestBody UserInfo userInfo) {
+		log.info("uiNum=>{}", uiNum);
+		log.info("userInfo => {}", userInfo);
+		return 1;
+	}
+	
+	@GetMapping("/user")
+	public @ResponseBody Integer session(HttpServletRequest req) {
+		log.info("1");
+		UserInfo userInfo = uiRepo.findById(2).get();
+		log.info("userInfo=>{}", userInfo);
+		HttpSession session = req.getSession();
+		session.setAttribute("userInfo", userInfo);
+		return 1;
 	}
 	
 	public static void main(String[] args) throws JsonProcessingException {

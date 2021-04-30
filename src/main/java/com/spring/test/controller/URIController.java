@@ -17,6 +17,5 @@ public class URIController {
 	
 	@GetMapping("/views/**")
 	public void goView() {
-		log.info("goView 실행중~~");
 	}
 }
